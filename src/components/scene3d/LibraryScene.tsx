@@ -22,39 +22,41 @@ export default function LibraryScene() {
   return (
     <div className="w-full h-full" style={{ width: '100%', height: '100%', position: 'relative' }}>
       <Canvas
-        camera={{ position: [15, 15, 15], fov: 60 }}
+        camera={{ position: [12, 10, 12], fov: 60 }}
         gl={{ antialias: true, powerPreference: 'high-performance' }}
         style={{ width: '100%', height: '100%' }}
       >
-        <color attach="background" args={['#1a1a2e']} />
-        <fog attach="fog" args={['#1a1a2e', 20, 50]} />
+        <color attach="background" args={['#2a2a4e']} />
+        <fog attach="fog" args={['#2a2a4e', 30, 80]} />
 
-        <ambientLight intensity={0.4 * lightIntensity} />
+        <ambientLight intensity={0.8} />
         <directionalLight
-          position={[10, 20, 10]}
-          intensity={1.2 * lightIntensity}
+          position={[10, 15, 10]}
+          intensity={1.5}
         />
-        <pointLight position={[0, 5, 0]} intensity={0.6 * lightIntensity} color="#ffd700" />
-        <pointLight position={[-10, 5, -5]} intensity={0.4 * lightIntensity} color="#87ceeb" />
-        <pointLight position={[10, 5, -5]} intensity={0.4 * lightIntensity} color="#87ceeb" />
+        <pointLight position={[0, 8, 0]} intensity={1.0} color="#ffd700" />
+        <pointLight position={[-10, 6, -5]} intensity={0.6} color="#87ceeb" />
+        <pointLight position={[10, 6, -5]} intensity={0.6} color="#87ceeb" />
+        <pointLight position={[-10, 6, 5]} intensity={0.6} color="#ffd700" />
+        <pointLight position={[10, 6, 5]} intensity={0.6} color="#ffd700" />
 
         <Suspense fallback={null}>
-          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
             <planeGeometry args={[50, 50]} />
-            <meshLambertMaterial color="#2d2d44" />
+            <meshLambertMaterial color="#3d3d5c" />
           </mesh>
 
           <mesh position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
             <planeGeometry args={[40, 40]} />
             <meshLambertMaterial
-              color="#3d3d5c"
+              color="#4d4d6c"
               transparent
-              opacity={0.3}
+              opacity={0.4}
             />
           </mesh>
 
           <gridHelper
-            args={[50, 50, '#4a4a6a', '#3a3a5a']}
+            args={[50, 50, '#6a6a8a', '#5a5a7a']}
             position={[0, 0.01, 0]}
           />
 
@@ -62,8 +64,8 @@ export default function LibraryScene() {
             <ShelfGroup key={shelf.id} shelf={shelf} />
           ))}
 
-          <ReadingArea seats={seats.filter(s => s.areaId === 'reading-1')} />
-          <ReadingArea seats={seats.filter(s => s.areaId === 'reading-2')} />
+          <ReadingArea seats={seats.filter(s => s.areaId === 'area-reading-1')} />
+          <ReadingArea seats={seats.filter(s => s.areaId === 'area-reading-2')} />
 
           {kioskDevices.map(device => (
             <KioskMachine key={device.id} device={device} />
@@ -73,7 +75,7 @@ export default function LibraryScene() {
             <ConveyorBelt key={device.id} device={device} />
           ))}
 
-          <MonitorCenter position={[0, 3, -12] as [number, number, number]} />
+          <MonitorCenter position={[0, 0, -10] as [number, number, number]} />
 
           {sortingBooks.length > 0 && <SortingAnimation />}
 
@@ -90,9 +92,10 @@ export default function LibraryScene() {
           <OrbitControls
             enableDamping
             dampingFactor={0.05}
-            minDistance={5}
-            maxDistance={40}
+            minDistance={3}
+            maxDistance={50}
             maxPolarAngle={Math.PI / 2.1}
+            target={[0, 1, 0]}
           />
         </Suspense>
       </Canvas>

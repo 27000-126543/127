@@ -66,36 +66,45 @@ export default function ShelfGroup({ shelf }: ShelfGroupProps) {
       position={[shelf.position.x, shelf.position.y, shelf.position.z]}
       rotation={[shelf.rotation.x, shelf.rotation.y, shelf.rotation.z]}
     >
-      <mesh castShadow receiveShadow position={[0, shelfHeight / 2, 0]}>
-        <boxGeometry args={[2.3, shelfHeight, 0.55]} />
-        <meshLambertMaterial
-          color={shelfColor}
-          emissive={isOverloaded ? '#ff0000' : '#000000'}
-          emissiveIntensity={isOverloaded ? 0.2 : 0}
-        />
-      </mesh>
-
       {isOverloaded && (
         <mesh ref={glowRef} position={[0, shelfHeight / 2, 0]}>
           <boxGeometry args={[2.5, shelfHeight + 0.2, 0.65]} />
           <meshLambertMaterial
             color="#ff4444"
             transparent
-            opacity={0.15}
+            opacity={0.2}
             emissive="#ff0000"
-            emissiveIntensity={0.5}
+            emissiveIntensity={0.6}
           />
         </mesh>
       )}
 
       {Array.from({ length: Math.min(shelf.levels, 3) }).map((_, i) => renderShelfLevel(i))}
 
-      <mesh position={[-1.2, shelfHeight / 2, 0]} castShadow>
-        <boxGeometry args={[0.1, shelfHeight, 0.55]} />
+      <mesh position={[-1.15, shelfHeight / 2, 0]} castShadow>
+        <boxGeometry args={[0.08, shelfHeight, 0.5]} />
+        <meshLambertMaterial
+          color={shelfColor}
+          emissive={isOverloaded ? '#ff0000' : '#000000'}
+          emissiveIntensity={isOverloaded ? 0.3 : 0}
+        />
+      </mesh>
+      <mesh position={[1.15, shelfHeight / 2, 0]} castShadow>
+        <boxGeometry args={[0.08, shelfHeight, 0.5]} />
+        <meshLambertMaterial
+          color={shelfColor}
+          emissive={isOverloaded ? '#ff0000' : '#000000'}
+          emissiveIntensity={isOverloaded ? 0.3 : 0}
+        />
+      </mesh>
+
+      <mesh position={[0, 0.02, 0]} castShadow>
+        <boxGeometry args={[2.3, 0.04, 0.5]} />
         <meshLambertMaterial color={shelfColor} />
       </mesh>
-      <mesh position={[1.2, shelfHeight / 2, 0]} castShadow>
-        <boxGeometry args={[0.1, shelfHeight, 0.55]} />
+
+      <mesh position={[0, shelfHeight - 0.02, 0]} castShadow>
+        <boxGeometry args={[2.3, 0.04, 0.5]} />
         <meshLambertMaterial color={shelfColor} />
       </mesh>
     </group>

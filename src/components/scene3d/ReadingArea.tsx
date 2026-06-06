@@ -28,10 +28,10 @@ export default function ReadingArea({ seats }: ReadingAreaProps) {
     return Array.from(tableMap.entries())
   }, [seats])
 
-  const areaId = seats[0]?.areaId || 'reading-1'
+  const areaId = seats[0]?.areaId || 'area-reading-1'
   const areaName = seats[0]?.areaName || '阅览区'
-  const baseX = areaId === 'reading-1' ? -10 : 10
-  const baseZ = -2
+  const baseX = areaId === 'area-reading-1' ? -8 : (areaId === 'area-reading-2' ? 8 : 0)
+  const baseZ = areaId === 'area-reading-1' ? 4 : (areaId === 'area-reading-2' ? 4 : 0)
 
   return (
     <group position={[baseX, 0, baseZ]}>
