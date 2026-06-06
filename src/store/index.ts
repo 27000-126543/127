@@ -508,18 +508,30 @@ export const useLibraryStore = create<LibraryState>((set, get) => ({
 
   resolveMisshelved: (id) => {
     const misshelvedBooks = get().misshelvedBooks;
+    const item = misshelvedBooks.find(m => m.id === id);
+    if (!item) return;
+
+    const newStatus = item.status === 'pending' ? 'processing' as const : 'resolved' as const;
     const updated = misshelvedBooks.map(m =>
-      m.id === id ? { ...m, status: 'resolved' as const } : m
+      m.id === id ? { ...m, status: newStatus } : m
     );
     set({ misshelvedBooks: updated });
+
+    if (newStatus === 'resolved') {
+      get().addNotification({
+        title: '错架图书已处理',
+        message: `《${item.bookTitle}》已放回正确位置`,
+        type: 'success',
+      });
+    }
 
     const user = get().currentUser;
     if (user) {
       get().addLog({
         userId: user.id,
         userName: user.name,
-        action: '处理错架图书',
-        details: `处理错架工单${id}`,
+        action: newStatus === 'processing' ? '开始处理错架图书' : '完成错架图书处理',
+        details: `${newStatus === 'processing' ? '开始处理' : '完成'}错架工单${id}`,
         level: 'info',
       });
     }

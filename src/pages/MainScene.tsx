@@ -189,6 +189,7 @@ const HomePage: React.FC = () => {
   const handleTestReserveSeat = () => {
     const availableSeat = seats.find(s => s.status === 'available');
     if (availableSeat && currentUser) {
+      selectBook(null);
       selectSeat(availableSeat);
       setTimeout(() => {
         reserveSeat(availableSeat.id, currentUser.id, 2);
