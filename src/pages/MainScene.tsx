@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Box, BookOpen, Users, Armchair, AlertTriangle, TrendingUp, Clock, MapPin, X } from 'lucide-react';
+import { Box, BookOpen, Users, Armchair, AlertTriangle, TrendingUp, Clock, MapPin, X, Flame, Siren, FileSpreadsheet } from 'lucide-react';
 import Header from '@/components/ui/Header';
 import Sidebar from '@/components/ui/Sidebar';
 import StatusBar from '@/components/ui/StatusBar';
@@ -160,7 +160,7 @@ const InfoPanel: React.FC = () => {
 
 const HomePage: React.FC = () => {
   const [activePanel, setActivePanel] = useState<PanelType>('info');
-  const { selectedBook, selectBook, selectedSeat, selectSeat } = useLibraryStore();
+  const { selectedBook, selectBook, selectedSeat, selectSeat, books, seats, returnBook, reserveSeat, currentUser, borrowHistory, addMisshelvedBook, misshelvedBooks, resolveMisshelved, getDailyReport } = useLibraryStore();
 
   useEffect(() => {
     if (selectedBook) {
@@ -169,6 +169,67 @@ const HomePage: React.FC = () => {
       setActivePanel('seat');
     }
   }, [selectedBook, selectedSeat]);
+
+  const handleTestBookClick = () => {
+    const booksWithHistory = books.filter(b =>
+      borrowHistory.some(h => h.bookId === b.id)
+    );
+    if (booksWithHistory.length > 0) {
+      selectBook(booksWithHistory[0]);
+    }
+  };
+
+  const handleTestReturnBook = () => {
+    const borrowedBook = books.find(b => b.status === 'borrowed');
+    if (borrowedBook) {
+      returnBook(borrowedBook.id);
+    }
+  };
+
+  const handleTestReserveSeat = () => {
+    const availableSeat = seats.find(s => s.status === 'available');
+    if (availableSeat && currentUser) {
+      selectSeat(availableSeat);
+      setTimeout(() => {
+        reserveSeat(availableSeat.id, currentUser.id, 2);
+      }, 500);
+    }
+  };
+
+  const handleTestHotPath = () => {
+    setActivePanel('prediction');
+  };
+
+  const handleTestEnvironment = () => {
+    setActivePanel('environment');
+  };
+
+  const handleTestInventory = () => {
+    setActivePanel('inventory');
+    setTimeout(() => {
+      const randomBook = books[Math.floor(Math.random() * books.length)];
+      const randomShelf = books[Math.floor(Math.random() * books.length)]?.location.shelfId;
+      addMisshelvedBook({
+        id: Math.random().toString(36).substr(2, 9),
+        bookId: randomBook.id,
+        bookTitle: randomBook.title,
+        currentShelfId: randomShelf,
+        currentShelfName: randomShelf.replace('shelf-', '') + '区',
+        targetShelfId: randomBook.location.shelfId,
+        targetShelfName: randomBook.location.shelfId.replace('shelf-', '') + '区',
+        status: 'pending',
+        detectedTime: new Date().toISOString(),
+      });
+    }, 500);
+  };
+
+  const handleTestEmergency = () => {
+    setActivePanel('emergency');
+  };
+
+  const handleTestExport = () => {
+    setActivePanel('report');
+  };
 
   const panelButtons: { type: PanelType; label: string; icon: React.ReactNode }[] = [
     { type: 'info', label: '概览', icon: <Box size={16} /> },
@@ -217,6 +278,33 @@ const HomePage: React.FC = () => {
         <div className="absolute top-4 left-4 glass-panel px-4 py-2 flex items-center gap-2">
           <Box size={16} className="text-library-400" />
           <span className="text-sm text-dark-300">3D 智慧图书馆</span>
+        </div>
+        <div className="absolute top-4 right-4 glass-panel p-3 flex flex-col gap-2 max-w-[200px]">
+          <div className="text-xs font-medium text-white mb-1">功能测试按钮</div>
+          <button onClick={handleTestBookClick} className="px-2 py-1.5 bg-cyan-500 hover:bg-cyan-600 text-white rounded text-xs transition-colors">
+            1. 点击图书查看借阅历史
+          </button>
+          <button onClick={handleTestReturnBook} className="px-2 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded text-xs transition-colors">
+            2. 还书分拣动画
+          </button>
+          <button onClick={handleTestReserveSeat} className="px-2 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded text-xs transition-colors">
+            3. 座位预约
+          </button>
+          <button onClick={handleTestHotPath} className="px-2 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded text-xs transition-colors">
+            4. 热门图书绿色路径
+          </button>
+          <button onClick={handleTestEnvironment} className="px-2 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded text-xs transition-colors">
+            5. 环境监测联动
+          </button>
+          <button onClick={handleTestInventory} className="px-2 py-1.5 bg-purple-500 hover:bg-purple-600 text-white rounded text-xs transition-colors">
+            6. 盘点错架工单
+          </button>
+          <button onClick={handleTestEmergency} className="px-2 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded text-xs transition-colors">
+            7. 应急疏散路线
+          </button>
+          <button onClick={handleTestExport} className="px-2 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded text-xs transition-colors">
+            8. 导出运营日报
+          </button>
         </div>
         <div className="absolute bottom-4 left-4 flex gap-2">
           <div className="glass-panel px-3 py-1.5 text-xs text-dark-400">
